@@ -1,0 +1,110 @@
+.auth-container {
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.auth-card {
+width: 450px;
+background: white;
+padding: 45px;
+border-radius: 25px;
+box-shadow: 0 10px 30px rgba(0,0,0,.1);
+}
+
+.auth-card h1 {
+margin-bottom: 10px;
+}
+
+.auth-card p {
+color: gray;
+margin-bottom: 30px;
+}
+
+.form-group {
+margin-bottom: 20px;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 8px;
+}
+
+.form-group input {
+width: 100%;
+padding: 14px;
+border: 1px solid #ddd;
+border-radius: 10px;
+font-size: 16px;
+box-sizing: border-box;
+}
+
+button {
+width: 100%;
+padding: 15px;
+border-radius: 12px;
+background: #25D366;
+color: white;
+font-size: 16px;
+border: none;
+cursor: pointer;
+}
+
+button:hover {
+background: #1ebd5a;
+}
+
+.register-link {
+margin-top: 25px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 12px;
+}
+
+.register-link p {
+color: #666;
+font-size: 15px;
+}
+
+.register-btn {
+background: transparent;
+border: 2px solid #25D366;
+color: #25D366;
+padding: 12px 24px;
+border-radius: 10px;
+cursor: pointer;
+font-size: 15px;
+font-weight: 600;
+transition: all .3s ease;
+}
+
+.register-btn:hover {
+background: #25D366;
+color: white;
+transform: translateY(-2px);
+}
+
+/* Dark Mode */
+
+:host-context(body.dark-mode) .auth-card {
+background: #1e1e1e;
+color: white;
+}
+
+:host-context(body.dark-mode) .auth-card h1,
+:host-context(body.dark-mode) .auth-card p,
+:host-context(body.dark-mode) .auth-card label {
+color: white;
+}
+
+:host-context(body.dark-mode) .auth-card input {
+background: #2c2c2c;
+color: white;
+border: 1px solid #444;
+}
+
+:host-context(body.dark-mode) .auth-card input::placeholder {
+color: #bbb;
+}

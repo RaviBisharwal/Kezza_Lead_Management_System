@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="header-card">
+    <div>
+      <h1>Dashboard</h1>
+      <br>
+      <p>Manage your WhatsApp account and contacts</p>
+    </div>
+</div>
+  <div class="card-grid">
+    <div class="card">
+      <h2>WhatsApp Connection</h2>
+      <br>
+        <p>
+          <strong>Status:</strong>
+          <span
+            [ngClass]="{
+              'connected': status === 'connected',
+              'pending': status === 'qr_pending',
+              'disconnected': status === 'disconnected'
+            }"
+          >
+           {{ status }}
+          </span>
+        </p>
+        <br>
+        <button
+          class="connect-btn"
+          (click)="connectWhatsapp()"
+          [disabled]="isConnecting">
+          Connect WhatsApp
+        </button>
+    </div>
+  </div>
+  <div class="qr-card" *ngIf="qrCode">
+    <h3>Scan QR Code</h3>
+    <qrcode
+      [qrdata]="qrCode"
+      [width]="300">
+    </qrcode>
+  </div>
+  <div class="action-card">
+    <h2>Stats</h2>
+    <br>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h2>Contacts</h2>
+        <h1>{{ totalContacts }}</h1>
+      </div>
+      <div class="stat-card">
+        <h2>Messages</h2>
+        <h1>{{ totalMessages }}</h1>
+      </div>
+    </div>
+  </div>
+</div>

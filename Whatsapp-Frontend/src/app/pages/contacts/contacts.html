@@ -1,0 +1,48 @@
+<div class="container">
+
+  <div class="contacts-header">
+
+    <h1>My Contacts</h1>
+
+    <input
+      type="text"
+      placeholder="Search contact..."
+      [(ngModel)]="searchText">
+
+  </div>
+
+  <br>
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>Name</th>
+        <th>Phone</th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+      *ngFor="let contact of filteredContacts()">
+
+        <td>
+          {{ contact.name }}
+        </td>
+
+        <td>
+          {{ contact.phone }}
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

@@ -1,0 +1,75 @@
+<nav class="navbar">
+
+  <div class="left-section">
+
+    <div class="logo">
+
+      Kezza Users
+
+    </div>
+
+    <a
+  routerLink="/dashboard"
+  [class.active]="isRoute('/dashboard')">
+
+  Dashboard
+
+</a>
+
+<a
+  routerLink="/contacts"
+  [class.active]="isRoute('/contacts')">
+
+  Contacts
+
+</a>
+
+  </div>
+
+  <div class="right-section">
+
+    <button
+      class="theme-btn"
+      (click)="toggleTheme()">
+
+      🌙
+
+    </button>
+
+    <div class="profile-menu">
+
+      <button
+        class="profile-btn"
+        (click)="toggleMenu()">
+
+        {{ user.name || 'User' }} 👤
+
+      </button>
+
+      <div
+        class="dropdown"
+        *ngIf="showMenu">
+
+        <button
+  class="menu-item"
+  (click)="goToProfile()">
+
+  My Profile
+
+</button>
+
+        <button
+          class="logout-btn"
+          (click)="logout()">
+
+          Logout
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</nav>

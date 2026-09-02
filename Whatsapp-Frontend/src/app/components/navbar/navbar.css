@@ -1,0 +1,291 @@
+.navbar {
+
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 80px;
+
+  background: white;
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 40px;
+
+  box-shadow: 0 2px 15px rgba(0,0,0,.08);
+
+  z-index: 1000;
+}
+
+/* Left Section */
+
+.left-section {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 35px;
+}
+
+.logo {
+
+  font-size: 30px;
+
+  font-weight: bold;
+
+  color: #075e54;
+}
+
+.left-section a {
+
+  text-decoration: none;
+
+  color: #333;
+
+  font-size: 18px;
+
+  font-weight: 500;
+
+  transition: .3s;
+}
+
+.left-section a:hover {
+
+  color: #25D366;
+}
+
+/* Active Page */
+
+.left-section a.active {
+
+  color: #25D366;
+
+  font-weight: 700;
+
+  border-bottom: 3px solid #25D366;
+
+  padding-bottom: 5px;
+
+  pointer-events: none;
+}
+
+/* Right Section */
+
+.right-section {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+/* Theme Button */
+
+.theme-btn {
+
+  width: 50px;
+  height: 50px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #25D366;
+
+  color: white;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.theme-btn:hover {
+
+  transform: scale(1.08);
+}
+
+/* Profile Menu */
+
+.profile-menu {
+
+  position: relative;
+}
+
+.profile-btn {
+
+  border: none;
+
+  background: #25D366;
+
+  color: white;
+
+  padding: 12px 20px;
+
+  border-radius: 30px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  transition: .3s;
+}
+
+.profile-btn:hover {
+
+  transform: scale(1.05);
+}
+
+/* Dropdown */
+
+.dropdown {
+
+  position: absolute;
+
+  right: 0;
+  top: 60px;
+
+  width: 180px;
+
+  background: white;
+
+  border-radius: 15px;
+
+  overflow: hidden;
+
+  box-shadow: 0 5px 20px rgba(0,0,0,.15);
+}
+
+/* Profile Button inside dropdown */
+
+.menu-item {
+
+  width: 100%;
+
+  padding: 15px;
+
+  border: none;
+
+  background: none;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  color: #333;
+}
+
+.menu-item:hover {
+
+  background: #f3f3f3;
+}
+
+/* Logout */
+
+.logout-btn {
+
+  display: block;
+
+  width: 100%;
+
+  padding: 15px;
+
+  border: none;
+
+  background: none;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  color: red;
+}
+
+.logout-btn:hover {
+
+  background: #f3f3f3;
+}
+
+/* ---------------- DARK MODE ---------------- */
+
+:host-context(body.dark-mode) .navbar {
+
+  background: #1e1e1e;
+}
+
+:host-context(body.dark-mode) .logo,
+:host-context(body.dark-mode) .left-section a {
+
+  color: white;
+}
+
+:host-context(body.dark-mode) .left-section a.active {
+
+  color: #25D366;
+}
+
+:host-context(body.dark-mode) .dropdown {
+
+  background: #1e1e1e;
+}
+
+:host-context(body.dark-mode) .menu-item {
+
+  color: white;
+}
+
+:host-context(body.dark-mode) .logout-btn {
+
+  color: #ff6b6b;
+}
+
+:host-context(body.dark-mode)
+.menu-item:hover,
+:host-context(body.dark-mode)
+.logout-btn:hover {
+
+  background: #2c2c2c;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media(max-width:768px) {
+
+  .navbar {
+
+    flex-direction: column;
+
+    height: auto;
+
+    padding: 20px;
+  }
+
+  .left-section {
+
+    flex-direction: column;
+
+    gap: 15px;
+  }
+
+  .right-section {
+
+    margin-top: 20px;
+  }
+
+  .logo {
+
+    font-size: 24px;
+  }
+}

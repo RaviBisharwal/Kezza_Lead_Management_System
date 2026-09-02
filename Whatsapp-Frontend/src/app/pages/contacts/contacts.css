@@ -1,0 +1,50 @@
+.contacts-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin:30px;
+}
+
+.contacts-header input{
+  width:350px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+
+  background:white;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+th{
+  background:#075e54;
+  color:white;
+}
+
+th,td{
+  padding:18px;
+}
+
+tr:nth-child(even){
+  background:#f8f9fa;
+}
+
+@media(max-width:768px){
+
+  .contacts-header{
+    flex-direction:column;
+    gap:20px;
+  }
+
+  .contacts-header input{
+    width:100%;
+  }
+
+}

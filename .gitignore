@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+Whatsapp-Backend/node_modules/
+Whatsapp-Frontend/node_modules/
+
+# Build outputs
+dist/
+Whatsapp-Frontend/dist/
+.angular/
+Whatsapp-Frontend/.angular/
+
+# WhatsApp sessions & cache
+.wwebjs_auth/
+.wwebjs_cache/
+Whatsapp-Backend/.wwebjs_auth/
+Whatsapp-Backend/.wwebjs_cache/
+
+# Sensitive credentials & environment files
+.env
+.env.*
+*.env
+credentials.json
+Whatsapp-Backend/credentials.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

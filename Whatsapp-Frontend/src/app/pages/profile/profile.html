@@ -1,0 +1,130 @@
+<div class="container">
+
+  <div class="card">
+
+    <h1>My Profile</h1>
+
+    <br>
+
+    <p>
+      <strong>Name:</strong>
+      {{ user.name }}
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Email:</strong>
+      {{ user.email }}
+    </p>
+
+    <br>
+
+    <p>
+      <strong>User ID:</strong>
+      {{ user.id }}
+    </p>
+
+    <br>
+
+    <p>
+      <strong>Category:</strong>
+    </p>
+
+    <br>
+
+    <select
+      [(ngModel)]="user.category"
+      (ngModelChange)="onCategoryChange()"
+      class="category-select">
+
+      <option value="" disabled>
+        Select Category
+      </option>
+
+      <option value="hair">
+        Hair
+      </option>
+
+      <option value="skin">
+        Skin
+      </option>
+
+      <option value="PMU">
+        PMU
+      </option>
+
+      <option value="weight_loss">
+        Weight Loss
+      </option>
+
+    </select>
+
+    <br><br>
+
+    <p>
+      <strong>Sub Categories:</strong>
+    </p>
+
+    <br>
+
+    <div *ngIf="user.category">
+
+      <div *ngFor="let item of categoryOptions[user.category]">
+
+        <label>
+
+          <input
+            type="checkbox"
+            [checked]="user.subcategory.includes(item)"
+            (change)="toggleSubcategory(item, $any($event.target).checked)">
+
+          {{ item }}
+
+        </label>
+
+        <br>
+
+      </div>
+
+    </div>
+
+    <br>
+
+    <p>
+  <strong>Centre:</strong>
+</p>
+
+<br>
+
+<select
+  [(ngModel)]="user.centre"
+  class="category-select">
+
+  <option value="" disabled>
+    Select Centre
+  </option>
+
+  <option value="Jaipur">
+    Jaipur
+  </option>
+
+  <option value="Sikar">
+    Sikar
+  </option>
+
+</select>
+
+    <br><br>
+
+    <button
+      class="update-btn"
+      (click)="updateProfile()">
+
+      Update Profile
+
+    </button>
+
+  </div>
+
+</div>

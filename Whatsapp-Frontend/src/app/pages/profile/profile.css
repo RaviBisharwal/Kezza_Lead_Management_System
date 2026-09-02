@@ -1,0 +1,74 @@
+.card {
+max-width: 700px;
+margin: auto;
+text-align: center;
+padding: 40px;
+border-radius: 20px;
+background: white;
+box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+.card p {
+font-size: 18px;
+}
+
+.category-badge {
+display: inline-block;
+margin-left: 10px;
+padding: 8px 18px;
+border-radius: 20px;
+background: #25D366;
+color: white;
+font-weight: 600;
+}
+
+.category-select {
+width: 250px;
+padding: 10px;
+border-radius: 10px;
+border: 1px solid #ccc;
+font-size: 16px;
+text-align: center;
+}
+
+.update-btn {
+background: #25D366;
+color: white;
+border: none;
+padding: 12px 25px;
+border-radius: 10px;
+cursor: pointer;
+font-size: 16px;
+}
+
+.update-btn:hover {
+background: #128c7e;
+}
+
+/* Dark Mode */
+
+:host-context(body.dark-mode) .card {
+background: #1e1e1e;
+color: white;
+}
+
+:host-context(body.dark-mode) .card h1,
+:host-context(body.dark-mode) .card p,
+:host-context(body.dark-mode) .card strong {
+color: white;
+}
+
+:host-context(body.dark-mode) .category-badge {
+background: #128c7e;
+}
+
+:host-context(body.dark-mode) .category-select {
+background: #2c2c2c;
+color: white;
+border: 1px solid #444;
+}
+
+:host-context(body.dark-mode) .category-select option {
+background: #2c2c2c;
+color: white;
+}

@@ -1,0 +1,46 @@
+services:
+  # -------------------------------------------------------------
+  # 1. Backend Service (Docker with Chromium for whatsapp-web.js)
+  # -------------------------------------------------------------
+  - type: web
+    name: kezza-whatsapp-backend
+    runtime: docker
+    dockerfilePath: ./Whatsapp-Backend/Dockerfile
+    dockerContext: ./Whatsapp-Backend
+    plan: free # Note: Upgrade to 'starter' with a Persistent Disk for persistent WhatsApp sessions
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        sync: false # Set in Render Dashboard (e.g., Aiven / TiDB / Clever Cloud MySQL host)
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: lead_management_system
+      - key: DB_PORT
+        value: 3306
+      - key: DB_SSL
+        value: "true"
+      - key: GOOGLE_CREDENTIALS_JSON
+        sync: false # Paste full JSON of credentials.json in Render Dashboard
+
+  # -------------------------------------------------------------
+  # 2. Frontend Service (Angular SSR Web Service)
+  # -------------------------------------------------------------
+  - type: web
+    name: kezza-whatsapp-frontend
+    runtime: node
+    rootDir: Whatsapp-Frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run serve:ssr:whatsapp-frontend
+    plan: free
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: PORT
+        value: 4000

@@ -1,0 +1,35 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.content {
+  margin-left: 100px;
+  width: calc(100% - 260px);
+  padding: 30px;
+  box-sizing: border-box;
+
+  min-height: 100vh;
+
+  background: #f5f7fb;
+
+  transition: 0.3s;
+}
+
+body.dark-mode .content {
+  background: #121212;
+}
+
+@media(max-width:768px){
+
+  .content{
+    margin-left:0;
+    width:100%;
+    padding:15px;
+  }
+
+}
+.full-width {
+  margin-left: 0 !important;
+  width: 100% !important;
+}
