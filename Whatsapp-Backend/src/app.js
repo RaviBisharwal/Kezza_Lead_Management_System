@@ -1,3 +1,8 @@
+const fs = require("fs");
+if (process.loadEnvFile && fs.existsSync(".env")) {
+    process.loadEnvFile(".env");
+}
+
 const cors = require("cors");
 const express = require("express");
 const http = require("http");
@@ -5,6 +10,7 @@ const WebSocket = require("ws");
 const userRoutes = require("./routes/user");
 const whatsappRoutes = require("./routes/whatsapp");
 const adsRoutes = require("./routes/ads");
+const seedAds = require("./seedAds");
 
 const app = express();
 app.use(cors());

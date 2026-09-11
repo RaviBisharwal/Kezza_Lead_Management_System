@@ -5,7 +5,7 @@
       <br>
       <p>Manage your WhatsApp account and contacts</p>
     </div>
-</div>
+  </div>
   <div class="card-grid">
     <div class="card">
       <h2>WhatsApp Connection</h2>
@@ -16,10 +16,10 @@
             [ngClass]="{
               'connected': status === 'connected',
               'pending': status === 'qr_pending',
-              'disconnected': status === 'disconnected'
+              'disconnected': status === 'disconnected' || status === 'error'
             }"
           >
-           {{ status }}
+           {{ status || 'Not Connected' }}
           </span>
         </p>
         <br>
@@ -27,17 +27,30 @@
           class="connect-btn"
           (click)="connectWhatsapp()"
           [disabled]="isConnecting">
-          Connect WhatsApp
+          {{ isConnecting ? 'Connecting...' : 'Connect WhatsApp' }}
         </button>
     </div>
   </div>
-  <div class="qr-card" *ngIf="qrCode">
-    <h3>Scan QR Code</h3>
+
+  <!-- Loading spinner while Chrome boots -->
+  <div class="qr-card loading-card" *ngIf="loadingQr">
+    <div class="spinner-ring"></div>
+    <p class="loading-msg">{{ loadingMessage }}</p>
+    <p class="loading-sub">{{ loadingElapsed }}s elapsed &mdash; this usually takes 15&ndash;30 seconds</p>
+  </div>
+
+  <!-- QR Code card -->
+  <div class="qr-card" *ngIf="qrCode && !loadingQr">
+    <h3>&#128242; Scan with WhatsApp</h3>
+    <p class="qr-hint">Open WhatsApp &rarr; Settings &rarr; Linked Devices &rarr; Link a Device</p>
     <qrcode
       [qrdata]="qrCode"
-      [width]="300">
+      [width]="280"
+      [errorCorrectionLevel]="'M'">
     </qrcode>
+    <p class="qr-expire">QR code refreshes automatically every ~20 seconds</p>
   </div>
+
   <div class="action-card">
     <h2>Stats</h2>
     <br>

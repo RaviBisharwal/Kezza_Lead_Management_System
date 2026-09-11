@@ -17,6 +17,74 @@ const clients = {};
 const qrCodes = {};
 const sessionStatus = {};
 
+const fs = require("fs");
+
+function getChromeExecutablePath() {
+    // 1. Honour explicit env var first
+    if (process.env.PUPPETEER_EXECUTABLE_PATH && fs.existsSync(process.env.PUPPETEER_EXECUTABLE_PATH)) {
+        return process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+
+    // 2. Windows paths
+    if (process.platform === "win32") {
+        const winPaths = [
+            process.env.LOCALAPPDATA  + "\\Google\\Chrome\\Application\\chrome.exe",
+            process.env.PROGRAMFILES  + "\\Google\\Chrome\\Application\\chrome.exe",
+            "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+            process.env.LOCALAPPDATA  + "\\Chromium\\Application\\chrome.exe",
+            process.env.PROGRAMFILES  + "\\Chromium\\Application\\chrome.exe",
+            "C:\\Program Files\\Chromium\\Application\\chrome.exe",
+            process.env.LOCALAPPDATA  + "\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+            process.env.PROGRAMFILES  + "\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+            "C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+            process.env.PROGRAMFILES  + "\\Microsoft\\Edge\\Application\\msedge.exe",
+            "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+        ].filter(Boolean);
+        for (const p of winPaths) {
+            if (fs.existsSync(p)) {
+                console.log("[Chrome] Found on Windows:", p);
+                return p;
+            }
+        }
+    }
+
+    // 3. macOS paths
+    if (process.platform === "darwin") {
+        const macPaths = [
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+            "/Applications/Chromium.app/Contents/MacOS/Chromium",
+            "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+            "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+        ];
+        for (const p of macPaths) {
+            if (fs.existsSync(p)) {
+                console.log("[Chrome] Found on macOS:", p);
+                return p;
+            }
+        }
+    }
+
+    // 4. Linux paths
+    if (process.platform === "linux") {
+        const linuxPaths = [
+            "/usr/bin/chromium",
+            "/usr/bin/chromium-browser",
+            "/usr/bin/google-chrome",
+            "/usr/bin/google-chrome-stable"
+        ];
+        for (const p of linuxPaths) {
+            if (fs.existsSync(p)) {
+                console.log("[Chrome] Found on Linux:", p);
+                return p;
+            }
+        }
+    }
+
+    console.warn("[Chrome] WARNING: No Chrome/Chromium found. Set PUPPETEER_EXECUTABLE_PATH in .env");
+    return undefined;
+}
+
 function getSerializedId(id) {
     return id?._serialized || id?.["$1"] || null;
 }
@@ -37,26 +105,87 @@ async function createSession(userId, sessionId, wss) {
 
     const { Client, LocalAuth, LocalWebCache } = require("whatsapp-web.js");
 
-    const puppeteerArgs = [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-accelerated-2d-canvas",
+    const isLinux   = process.platform === "linux";
+    const isWindows = process.platform === "win32";
+
+    /*
+     * Puppeteer launch args — platform-aware:
+     *  - Linux (Docker):   needs --no-sandbox, --single-process, --no-zygote
+     *  - macOS:            skip sandbox flags (not needed, can slow startup)
+     *  - Windows:          skip --no-sandbox & --disable-setuid-sandbox
+     *                      (they crash Chrome on Windows)
+     */
+    const commonArgs = [
         "--no-first-run",
-        "--no-zygote",
-        "--single-process",
-        "--disable-gpu"
+        "--disable-extensions",
+        "--disable-default-apps",
+        "--disable-background-networking",
+        "--disable-sync",
+        "--disable-translate",
+        "--hide-scrollbars",
+        "--metrics-recording-only",
+        "--mute-audio",
+        "--safebrowsing-disable-auto-update",
+        "--ignore-certificate-errors",
+        "--disable-features=TranslateUI,BlinkGenPropertyTrees"
     ];
+
+    const puppeteerArgs = [
+        ...(isLinux   ? ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu", "--no-zygote", "--single-process"] : []),
+        ...(isWindows ? [] : []),                         // Windows: no extra sandbox flags needed
+        ...(!isWindows ? ["--disable-gpu"] : []),         // --disable-gpu can crash on Windows with some setups
+        ...commonArgs
+    ];
+
+    const cachePath   = process.env.WWEBJS_CACHE_PATH  || "./.wwebjs_cache";
+    const authPath    = process.env.WWEBJS_AUTH_PATH   || "./.wwebjs_auth";
+
+    // Ensure cache dirs exist
+    if (!fs.existsSync(cachePath)) fs.mkdirSync(cachePath, { recursive: true });
+    if (!fs.existsSync(authPath))  fs.mkdirSync(authPath,  { recursive: true });
+
+    /*
+     * Clean up stale Chrome lock files left by crashes / hard kills.
+     * Without this, Puppeteer throws "browser is already running" even
+     * though no browser is actually open.
+     */
+    const lockFiles = [
+        `${authPath}/session-${sessionId}/SingletonLock`,
+        `${authPath}/session-${sessionId}/SingletonSocket`,
+        `${authPath}/session-${sessionId}/SingletonCookie`,
+        `${cachePath}/SingletonLock`,
+        `${cachePath}/SingletonSocket`
+    ];
+    for (const lf of lockFiles) {
+        try {
+            if (fs.existsSync(lf)) {
+                fs.unlinkSync(lf);
+                console.log("[Chrome] Removed stale lock file:", lf);
+            }
+        } catch (_) {}
+    }
 
     const client = new Client({
         authStrategy: new LocalAuth({
             clientId: sessionId,
-            dataPath: process.env.WWEBJS_AUTH_PATH || "./.wwebjs_auth"
+            dataPath: authPath
         }),
+
+        /*
+         * LocalWebCache: caches WhatsApp Web JS/CSS locally so Chrome
+         * does NOT re-download ~8MB of assets on every startup.
+         * First run: slow (downloads). Every run after: fast (~5-8 sec).
+         */
+        webVersionCache: {
+            type: "local",
+            path: cachePath,
+            strict: false          // fall back to remote if cache is stale
+        },
+
         puppeteer: {
             headless: true,
             protocolTimeout: 300000,
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+            executablePath: getChromeExecutablePath(),
             args: puppeteerArgs
         }
     });
@@ -683,7 +812,22 @@ client.on("error", error => {
     );
 });
 
-    client.initialize();
+    client.initialize().catch(err => {
+        console.error("CLIENT INITIALIZATION ERROR:", err);
+        sessionStatus[sessionId] = "error";
+        delete clients[sessionId];
+        if (wss && wss.clients) {
+            wss.clients.forEach(c => {
+                if (c.readyState === 1) {
+                    c.send(JSON.stringify({
+                        sessionId,
+                        status: "error",
+                        error: err.message
+                    }));
+                }
+            });
+        }
+    });
 }
 async function recoverOldMessages(
 client,

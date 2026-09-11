@@ -1,3 +1,8 @@
+const fs = require("fs");
+if (process.loadEnvFile && fs.existsSync(".env")) {
+    process.loadEnvFile(".env");
+}
+
 const mysql = require("mysql2/promise");
 
 const poolConfig = {

@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "start:win": "node src/app.js",
+    "setup:db": "node -e \"const pool=require('./src/db');pool.end();\""
   },
   "keywords": [],
   "author": "",
