@@ -169,19 +169,17 @@ async function createSession(userId, sessionId, wss) {
         }),
 
         /*
-         * LocalWebCache: caches WhatsApp Web JS/CSS locally so Chrome
-         * does NOT re-download ~8MB of assets on every startup.
-         * First run: slow (downloads). Every run after: fast (~5-8 sec).
+         * Use remote web version cache — avoids the stale local HTML that
+         * causes "Execution context was destroyed" crashes at startup.
          */
         webVersionCache: {
-            type: "local",
-            path: cachePath,
-            strict: false          // fall back to remote if cache is stale
+            type: "remote",
+            remotePath: "https://raw.githubusercontent.com/wwebjs/wwebjs-version-files/main"
         },
 
         puppeteer: {
             headless: true,
-            protocolTimeout: 300000,
+            protocolTimeout: 600000,
             executablePath: getChromeExecutablePath(),
             args: puppeteerArgs
         }
