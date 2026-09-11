@@ -1,39 +1,51 @@
 services:
-  # -------------------------------------------------------------
-  # 1. Backend Service (Docker with Chromium for whatsapp-web.js)
-  # -------------------------------------------------------------
+  # ─────────────────────────────────────────────────────────────────
+  # 1. Backend — Docker (Node.js + Chromium for whatsapp-web.js)
+  # ─────────────────────────────────────────────────────────────────
   - type: web
-    name: kezza-whatsapp-backend
+    name: kezza-backend
     runtime: docker
     dockerfilePath: ./Whatsapp-Backend/Dockerfile
     dockerContext: ./Whatsapp-Backend
-    plan: free # Note: Upgrade to 'starter' with a Persistent Disk for persistent WhatsApp sessions
+    plan: free
     healthCheckPath: /
     envVars:
       - key: PORT
-        value: 3000
+        value: "3000"
       - key: NODE_ENV
         value: production
+
+      # ── Database (set these in Render Dashboard → Environment) ──
       - key: DB_HOST
-        sync: false # Set in Render Dashboard (e.g., Aiven / TiDB / Clever Cloud MySQL host)
+        sync: false          # e.g. mysql-xxx.aivencloud.com
+      - key: DB_PORT
+        sync: false          # e.g. 12345
       - key: DB_USER
-        sync: false
+        sync: false          # e.g. avnadmin
       - key: DB_PASSWORD
         sync: false
       - key: DB_NAME
         value: lead_management_system
-      - key: DB_PORT
-        value: 3306
       - key: DB_SSL
-        value: "true"
-      - key: GOOGLE_CREDENTIALS_JSON
-        sync: false # Paste full JSON of credentials.json in Render Dashboard
+        value: "true"        # Required for Aiven / cloud MySQL
 
-  # -------------------------------------------------------------
-  # 2. Frontend Service (Angular SSR Web Service)
-  # -------------------------------------------------------------
+      # ── WhatsApp / Puppeteer ──
+      - key: PUPPETEER_EXECUTABLE_PATH
+        value: /usr/bin/chromium
+      - key: WWEBJS_AUTH_PATH
+        value: ./.wwebjs_auth
+      - key: WWEBJS_CACHE_PATH
+        value: ./.wwebjs_cache
+
+      # ── Google Sheets (optional) ──
+      - key: GOOGLE_CREDENTIALS_JSON
+        sync: false          # Paste full JSON of credentials.json in Render Dashboard
+
+  # ─────────────────────────────────────────────────────────────────
+  # 2. Frontend — Angular SSR (Node.js)
+  # ─────────────────────────────────────────────────────────────────
   - type: web
-    name: kezza-whatsapp-frontend
+    name: kezza-frontend
     runtime: node
     rootDir: Whatsapp-Frontend
     buildCommand: npm install && npm run build
@@ -41,6 +53,6 @@ services:
     plan: free
     envVars:
       - key: NODE_VERSION
-        value: 20.18.0
+        value: "20.18.0"
       - key: PORT
-        value: 4000
+        value: "4000"
