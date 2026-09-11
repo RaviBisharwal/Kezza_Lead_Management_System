@@ -1,13 +1,9 @@
-FROM node:20-bullseye-slim
+FROM node:20-bookworm-slim
 
 # Install Chromium and required runtime libraries for Puppeteer
 RUN apt-get update && apt-get install -y \
     chromium \
-    fonts-ipafont-gothic \
-    fonts-wqy-zenhei \
-    fonts-thai-tlwg \
-    fonts-kacst \
-    fonts-freefont-ttf \
+    fonts-liberation \
     libnss3 \
     libatk1.0-0 \
     libatk-bridge2.0-0 \
