@@ -29,7 +29,7 @@ export class App {
       .subscribe(() => {
 
         const user =
-          localStorage.getItem('user');
+          typeof localStorage !== 'undefined' ? localStorage.getItem('user') : null;
 
         const currentRoute =
           this.router.url;

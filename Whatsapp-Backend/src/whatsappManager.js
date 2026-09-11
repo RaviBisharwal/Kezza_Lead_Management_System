@@ -119,14 +119,11 @@ async function createSession(userId, sessionId, wss) {
         "--no-first-run",
         "--disable-extensions",
         "--disable-default-apps",
-        "--disable-background-networking",
         "--disable-sync",
         "--disable-translate",
         "--hide-scrollbars",
-        "--metrics-recording-only",
         "--mute-audio",
         "--safebrowsing-disable-auto-update",
-        "--ignore-certificate-errors",
         "--disable-features=TranslateUI,BlinkGenPropertyTrees"
     ];
 

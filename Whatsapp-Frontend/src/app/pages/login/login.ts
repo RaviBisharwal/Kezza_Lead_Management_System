@@ -23,10 +23,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
 
-  const user =
-    localStorage.getItem(
-      'user'
-    );
+    const user =
+      typeof localStorage !== 'undefined' ? localStorage.getItem('user') : null;
 
   if (user) {
 
