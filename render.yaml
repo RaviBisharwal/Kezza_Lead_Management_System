@@ -1,33 +1,33 @@
 services:
   # ─────────────────────────────────────────────────────────────────
   # 1. Backend — Docker (Node.js + Chromium for whatsapp-web.js)
+  #    NOTE: name must match the EXISTING Render service, otherwise
+  #    applying this blueprint creates a duplicate instead of updating it.
   # ─────────────────────────────────────────────────────────────────
   - type: web
-    name: kezza-backend
+    name: kezza-lead-management-system-1
     runtime: docker
     dockerfilePath: ./Whatsapp-Backend/Dockerfile
     dockerContext: ./Whatsapp-Backend
     plan: free
     healthCheckPath: /
     envVars:
-      - key: PORT
-        value: "3000"
       - key: NODE_ENV
         value: production
 
       # ── Database (set these in Render Dashboard → Environment) ──
       - key: DB_HOST
-        sync: false          # e.g. mysql-xxx.aivencloud.com
+        sync: false          # mysql-269a171a-...l.aivencloud.com
       - key: DB_PORT
-        sync: false          # e.g. 12345
+        sync: false          # 28054
       - key: DB_USER
-        sync: false          # e.g. avnadmin
+        sync: false          # avnadmin
       - key: DB_PASSWORD
         sync: false
       - key: DB_NAME
         value: lead_management_system
       - key: DB_SSL
-        value: "true"        # Required for Aiven / cloud MySQL
+        value: "true"        # Required for Aiven
 
       # ── WhatsApp / Puppeteer ──
       - key: PUPPETEER_EXECUTABLE_PATH
@@ -39,20 +39,22 @@ services:
 
       # ── Google Sheets (optional) ──
       - key: GOOGLE_CREDENTIALS_JSON
-        sync: false          # Paste full JSON of credentials.json in Render Dashboard
+        sync: false          # Paste full contents of credentials.json
 
   # ─────────────────────────────────────────────────────────────────
-  # 2. Frontend — Angular SSR (Node.js)
+  # 2. Frontend — Angular SSR (Node web service)
+  #    This is the service that was never deployed — it is why the URL
+  #    only showed the backend's "Server Running" text.
   # ─────────────────────────────────────────────────────────────────
   - type: web
     name: kezza-frontend
     runtime: node
     rootDir: Whatsapp-Frontend
-    buildCommand: npm install && npm run build
-    startCommand: npm run serve:ssr:whatsapp-frontend
     plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm run serve:ssr:whatsapp-frontend
     envVars:
+      # Angular 21 requires ^20.19.0 || ^22.12.0 || >=24.
+      # The previous value (20.18.0) was BELOW that floor and would fail the build.
       - key: NODE_VERSION
         value: "22.12.0"
-      - key: PORT
-        value: "4000"
