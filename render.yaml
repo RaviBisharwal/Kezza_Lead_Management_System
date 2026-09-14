@@ -51,7 +51,7 @@ services:
     runtime: node
     rootDir: Whatsapp-Frontend
     plan: free
-    buildCommand: npm ci && npm run build
+    buildCommand: npm install && npm run build
     startCommand: npm run serve:ssr:whatsapp-frontend
     envVars:
       # Angular 21 requires ^20.19.0 || ^22.12.0 || >=24.
