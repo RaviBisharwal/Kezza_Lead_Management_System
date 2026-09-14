@@ -1,7 +1,5 @@
 export const environment = {
   production: true,
-  // Update this to your deployed Render Backend URL (e.g., 'https://whatsapp-backend-xxxx.onrender.com')
-  apiUrl: 'https://kezza-lead-management-system-1.onrender.com',
-  // WebSocket URL corresponds to your backend URL (wss:// instead of https://)
-  wsUrl: 'wss://kezza-lead-management-system-1.onrender.com'
+  apiUrl: 'https://kezza-lead-management-system-3.onrender.com',
+  wsUrl: 'wss://kezza-lead-management-system-3.onrender.com'
 };
